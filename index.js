@@ -260,24 +260,43 @@ The Boilerplate created using create-react-js-tailwind
     if (isWindows) {
       console.log("Detected Windows environment.");
       try {
-        execSync(
-          `powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri https://bun.sh/install -OutFile install.bat; Start-Process -FilePath .\\install.bat -NoNewWindow -Wait; Remove-Item .\\install.bat; }"`,
-          { stdio: "inherit" }
+        // Install Bun for Windows using PowerShell
+        console.log("Installing Bun using npm...");
+        execSync("npm install -g bun", { stdio: "inherit" });
+
+        console.log("Bun installed successfully. Running 'bun install'...");
+        execSync("bun install", { stdio: "inherit" });
+      } catch (error) {
+        console.error(
+          "Error installing or running Bun on Windows:",
+          error.message
         );
-      } catch (installError) {
-        console.error("Error installing Bun on Windows:", installError.message);
         process.exit(1);
       }
     } else {
       console.log("Detected Linux/MacOS environment.");
-      execSync("curl -fsSL https://bun.sh/install | bash", {
-        stdio: "inherit",
-      });
+      try {
+        // Install Bun for Unix-like systems
+        execSync("curl -fsSL https://bun.sh/install | bash", {
+          stdio: "inherit",
+        });
 
-      // Update PATH for Bun
-      const bunPath = "~/.bun/bin";
-      process.env.PATH += `:${bunPath}`;
-      execSync("source ~/.bashrc", { stdio: "inherit" });
+        // Ensure Bun is accessible immediately in the current process
+
+        // Update PATH for Bun
+        const bunPath = "~/.bun/bin";
+        process.env.PATH += `:${bunPath}`;
+        execSync("source ~/.bashrc", { stdio: "inherit" });
+
+        console.log("Bun installed successfully. Running 'bun install'...");
+        execSync("bun install", { stdio: "inherit" });
+      } catch (error) {
+        console.error(
+          "Error installing or running Bun on Linux/MacOS:",
+          error.message
+        );
+        process.exit(1);
+      }
     }
 
     console.log("Bun installed successfully. Running 'bun install'...");
