@@ -1,5 +1,7 @@
 # create-react-js-tailwind
 
+![Demo of the project](https://raw.githubusercontent.com/akshaywritescode/create-react-js-tailwind/refs/heads/main/sample.gif)
+
 `create-react-js-tailwind` is an NPX script that scaffolds a React project with Vite and Tailwind CSS. It generates a complete boilerplate with configurations for ESLint, PostCSS, and TailwindCSS, providing you with a modern development setup out of the box.
 
 ## Features
