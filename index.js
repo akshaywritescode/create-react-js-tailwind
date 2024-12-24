@@ -82,7 +82,6 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   );
 
   // Step 6: Create vite.config.js file
-
   const viteConfigContent = `import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc'; // React SWC plugin for fast builds
 
@@ -200,6 +199,52 @@ export default {
   fs.writeFileSync(
     path.join(process.cwd(), "postcss.config.js"),
     postcssConfigContent
+  );
+
+  //Step 12: Create .gitignore file
+  const gitIgnoreContent = `# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+`;
+  fs.writeFileSync(path.join(process.cwd(), ".gitignore"), gitIgnoreContent);
+
+  // Step 13: Create postcss.config.js file
+  const readMeContent = `# React + Vite
+
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+
+Currently, two official plugins are available:
+
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+
+The Boilerplate created using create-react-js-tailwind
+- [create-react-js-tailwind on github](https://github.com/akshaywritescode/create-react-js-tailwind)`;
+
+  fs.writeFileSync(
+    path.join(process.cwd(), "README.md"),
+    readMeContent
   );
 
   // Final message
