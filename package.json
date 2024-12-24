@@ -1,10 +1,14 @@
 {
   "name": "create-react-js-tailwind",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "main": "index.js",
   "bin": {
     "create-react-js-tailwind": "./index.js"
   },
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/akshaywritescode/create-react-js-tailwind.git"
+},
   "scripts": {
     "dev": "vite",
     "build": "vite build",
