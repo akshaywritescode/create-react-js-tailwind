@@ -258,14 +258,17 @@ The Boilerplate created using create-react-js-tailwind
     );
 
     if (isWindows) {
-      // Windows installation using PowerShell
       console.log("Detected Windows environment.");
-      execSync(
-        'powershell -Command "iwr https://bun.sh/install -UseBasicParsing | iex"',
-        { stdio: "inherit" }
-      );
+      try {
+        execSync(
+          `powershell -Command "& { [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12; Invoke-WebRequest -Uri https://bun.sh/install -OutFile install.bat; Start-Process -FilePath .\\install.bat -NoNewWindow -Wait; Remove-Item .\\install.bat; }"`,
+          { stdio: "inherit" }
+        );
+      } catch (installError) {
+        console.error("Error installing Bun on Windows:", installError.message);
+        process.exit(1);
+      }
     } else {
-      // Unix-based installation
       console.log("Detected Linux/MacOS environment.");
       execSync("curl -fsSL https://bun.sh/install | bash", {
         stdio: "inherit",
