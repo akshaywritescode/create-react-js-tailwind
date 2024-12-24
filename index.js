@@ -1,0 +1,209 @@
+#!/usr/bin/env node
+
+const fs = require("fs");
+const path = require("path");
+const { execSync } = require("child_process");
+
+const projectName = process.argv[2] || path.basename(process.cwd());
+
+try {
+  // Step 1: Run `npm init --yes` to create package.json dynamically
+  execSync("npm init --yes");
+
+  // Step 2: Read the generated package.json
+  const packageJsonPath = path.join(process.cwd(), "package.json");
+  const packageJson = require(packageJsonPath);
+
+  // Step 3: Modify package.json to include necessary fields
+  packageJson.scripts = {
+    dev: "vite",
+    build: "vite build",
+    lint: "eslint .",
+    preview: "vite preview",
+  };
+
+  packageJson.dependencies = {
+    ...packageJson.dependencies,
+    react: "^18.2.0",
+    "react-dom": "^18.2.0",
+  };
+
+  packageJson.devDependencies = {
+    ...packageJson.devDependencies,
+    "@eslint/js": "^9.17.0",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react-swc": "^3.5.0",
+    eslint: "^9.17.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.16",
+    globals: "^15.13.0",
+    vite: "^6.0.3",
+    tailwindcss: "^3.0.0",
+    postcss: "^8.4.6",
+    autoprefixer: "^10.4.4",
+  };
+
+  // Add "type" as "module"
+  packageJson.type = "module";
+
+  // Write the modified package.json back
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+  // Step 4: Create 'public' and 'src' folders
+  fs.mkdirSync(path.join(process.cwd(), "public"));
+  fs.mkdirSync(path.join(process.cwd(), "src"));
+
+  // Create assets folder inside src
+  fs.mkdirSync(path.join(process.cwd(), "src", "assets"));
+
+  // Step 5: Create App.jsx and Index.jsx inside src
+  const appJsxContent = `function App() {
+  return <div>Hello, React with Tailwind CSS!</div>;
+}
+
+export default App;`;
+
+  const indexJsxContent = `import React from 'react';
+import ReactDOM from 'react-dom/client';
+import './index.css';
+import App from './App';
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+<React.StrictMode>
+    <App />
+</React.StrictMode>)`;
+
+  fs.writeFileSync(path.join(process.cwd(), "src", "App.jsx"), appJsxContent);
+  fs.writeFileSync(
+    path.join(process.cwd(), "src", "Index.jsx"),
+    indexJsxContent
+  );
+
+  // Step 6: Create vite.config.js file
+
+  const viteConfigContent = `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc'; // React SWC plugin for fast builds
+
+// https://vitejs.dev/config/
+export default defineConfig({
+  plugins: [react()],
+});`;
+
+  fs.writeFileSync(
+    path.join(process.cwd(), "vite.config.js"),
+    viteConfigContent
+  );
+
+  // Step 7: Create index.html file
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>React + JS + Vite + Tailwind</title>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="module" src="./src/Index.jsx"></script>
+</body>
+</html>`;
+
+  fs.writeFileSync(path.join(process.cwd(), "index.html"), indexHtmlContent);
+
+  // Step 8: Create eslint.config.js file
+  const eslintConfigContent = `import js from '@eslint/js'
+import globals from 'globals'
+import react from 'eslint-plugin-react'
+import reactHooks from 'eslint-plugin-react-hooks'
+import reactRefresh from 'eslint-plugin-react-refresh'
+
+export default [
+  { ignores: ['dist'] },
+  {
+    files: ['**/*.{js,jsx}'],
+    languageOptions: {
+      ecmaVersion: 2020,
+      globals: globals.browser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        ecmaFeatures: { jsx: true },
+        sourceType: 'module',
+      },
+    },
+    settings: { react: { version: '18.3' } },
+    plugins: {
+      react,
+      'react-hooks': reactHooks,
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      ...js.configs.recommended.rules,
+      ...react.configs.recommended.rules,
+      ...react.configs['jsx-runtime'].rules,
+      ...reactHooks.configs.recommended.rules,
+      'react/jsx-no-target-blank': 'off',
+      'react-refresh/only-export-components': [
+        'warn',
+        { allowConstantExport: true },
+      ],
+    },
+  },
+]`;
+
+  fs.writeFileSync(
+    path.join(process.cwd(), "eslint.config.js"),
+    eslintConfigContent
+  );
+
+  // Step 9: Create index.css in src with Tailwind directives
+  const indexCssContent = `@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind variants;`;
+
+  fs.writeFileSync(
+    path.join(process.cwd(), "src", "index.css"),
+
+    indexCssContent
+  );
+
+  // Step 10: Create tailwind.config.js file
+
+  const tailwindConfigContent = `/** @type {import('tailwindcss').Config} */
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}`;
+
+  fs.writeFileSync(
+    path.join(process.cwd(), "tailwind.config.js"),
+
+    tailwindConfigContent
+  );
+
+  // Step 11: Create postcss.config.js file
+  const postcssConfigContent = `export default {
+  plugins: {
+    tailwindcss: {},
+    autoprefixer: {},
+  },
+};`;
+
+  fs.writeFileSync(
+    path.join(process.cwd(), "postcss.config.js"),
+    postcssConfigContent
+  );
+
+  // Final message
+  console.log("\nDone. Now run:\n\n  npm install\n  npm run dev");
+} catch (error) {
+  console.error("Error creating directories and files:", error.message);
+}
