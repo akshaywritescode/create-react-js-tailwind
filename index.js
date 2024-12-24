@@ -274,6 +274,7 @@ The Boilerplate created using create-react-js-tailwind
       // Update PATH for Bun
       const bunPath = "~/.bun/bin";
       process.env.PATH += `:${bunPath}`;
+      execSync("source ~/.bashrc", { stdio: "inherit" });
     }
 
     console.log("Bun installed successfully. Running 'bun install'...");
