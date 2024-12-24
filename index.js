@@ -242,13 +242,54 @@ Currently, two official plugins are available:
 The Boilerplate created using create-react-js-tailwind
 - [create-react-js-tailwind on github](https://github.com/akshaywritescode/create-react-js-tailwind)`;
 
-  fs.writeFileSync(
-    path.join(process.cwd(), "README.md"),
-    readMeContent
-  );
+  fs.writeFileSync(path.join(process.cwd(), "README.md"), readMeContent);
+
+  // Step14: Check for Bun and install Bun
+  const isWindows = process.platform === "win32";
+
+  try {
+    // Check if Bun is installed
+    execSync("bun --version", { stdio: "ignore" });
+    console.log("Bun is already installed. Running 'bun install'...");
+    execSync("bun install", { stdio: "inherit" });
+  } catch {
+    console.log(
+      "Bun is not installed. Installing Bun...(This is one time process)"
+    );
+
+    if (isWindows) {
+      // Windows installation using PowerShell
+      console.log("Detected Windows environment.");
+      execSync(
+        'powershell -Command "iwr https://bun.sh/install -UseBasicParsing | iex"',
+        { stdio: "inherit" }
+      );
+    } else {
+      // Unix-based installation
+      console.log("Detected Linux/MacOS environment.");
+      execSync("curl -fsSL https://bun.sh/install | bash", {
+        stdio: "inherit",
+      });
+
+      // Update PATH for Bun
+      const bunPath = "~/.bun/bin";
+      process.env.PATH += `:${bunPath}`;
+    }
+
+    console.log("Bun installed successfully. Running 'bun install'...");
+    execSync("bun install", { stdio: "inherit" });
+  }
+
+  // Step15: Delete bun.lockb and create package-lock.json
+  console.log("Deleting bun.lockb...");
+  fs.unlinkSync(path.join(process.cwd(), "bun.lockb"));
+
+  console.log("Creating package-lock.json...");
+  execSync("npm i --package-lock-only", { stdio: "inherit" });
 
   // Final message
-  console.log("\nDone. Now run:\n\n  npm install\n  npm run dev");
+  console.log("\nDone. Now:\n\n  Starting Dev Server...");
+  execSync("npm run dev", { stdio: "inherit" });
 } catch (error) {
   console.error("Error creating directories and files:", error.message);
 }
