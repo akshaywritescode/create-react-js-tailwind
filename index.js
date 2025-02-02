@@ -277,16 +277,8 @@ The Boilerplate created using create-react-js-tailwind
       console.log("Detected Linux/MacOS environment.");
       try {
         // Install Bun for Unix-like systems
-        execSync("curl -fsSL https://bun.sh/install | bash", {
-          stdio: "inherit",
-        });
+        execSync("npm install -g bun", { stdio: "inherit" });
 
-        // Ensure Bun is accessible immediately in the current process
-
-        // Update PATH for Bun
-        const bunPath = "~/.bun/bin";
-        process.env.PATH += `:${bunPath}`;
-        execSync("source ~/.bashrc", { stdio: "inherit" });
 
         console.log("Bun installed successfully. Running 'bun install'...");
         execSync("bun install", { stdio: "inherit" });
