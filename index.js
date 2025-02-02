@@ -296,8 +296,8 @@ The Boilerplate created using create-react-js-tailwind
   }
 
   // Step15: Delete bun.lockb and create package-lock.json
-  console.log("Deleting bun.lockb...");
-  fs.unlinkSync(path.join(process.cwd(), "bun.lockb"));
+  console.log("Deleting bun.lock...");
+  fs.unlinkSync(path.join(process.cwd(), "bun.lock"));
 
   console.log("Creating package-lock.json...");
   execSync("npm i --package-lock-only", { stdio: "inherit" });
