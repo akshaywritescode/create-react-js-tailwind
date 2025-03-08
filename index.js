@@ -1,33 +1,31 @@
 #!/usr/bin/env node
+import { execSync } from "child_process";
+import fs from "fs";
+import path from "path";
 
-const fs = require("fs");
-const path = require("path");
-const { execSync } = require("child_process");
+const args = process.argv.slice(2);
+const projectName = args[0] || "."; // Default to current directory if no name is provided
 
-const projectName = process.argv[2];
+// Resolve the absolute path
+const projectPath = projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
 
-if (!projectName) {
-  console.error("Please provide a project name.");
-  console.error("Example: npx create-react-js-tailwind my-app");
-  process.exit(1);
-}
-
-const projectPath = path.join(process.cwd(), projectName);
-
-// Check if the directory exists
-if (fs.existsSync(projectPath)) {
+if (projectName !== "." && fs.existsSync(projectPath)) {
   console.error(`Error: The folder '${projectName}' already exists!`);
   process.exit(1);
 }
 
-// Create the project folder
-fs.mkdirSync(projectPath, { recursive: true });
+// Create the folder only if projectName is not '.'
+if (projectName !== ".") {
+  fs.mkdirSync(projectPath);
+}
 
-// Change the working directory to the new project folder
-process.chdir(projectPath);
+console.log(`Creating React + Tailwind project in ${projectPath}...`);
 
-// Now your script will continue in the new project directory
-console.log(`Creating project in: ${projectPath}`);
+// Change to the directory and run commands
+execSync(
+  `cd ${projectPath} && npx create-react-app . && npm install -D tailwindcss postcss autoprefixer && npx tailwindcss init -p`,
+  { stdio: "inherit", shell: true }
+);
 
 try {
   // Step 1: Run `npm init --yes` to create package.json dynamically
