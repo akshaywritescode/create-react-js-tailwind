@@ -21,12 +21,6 @@ if (projectName !== ".") {
 
 console.log(`Creating React + Tailwind project in ${projectPath}...`);
 
-// Change to the directory and run commands
-execSync(
-  `cd ${projectPath} && npx create-react-app . && npm install -D tailwindcss postcss autoprefixer && npx tailwindcss init -p`,
-  { stdio: "inherit", shell: true }
-);
-
 try {
   // Step 1: Run `npm init --yes` to create package.json dynamically
   execSync("npm init --yes");
