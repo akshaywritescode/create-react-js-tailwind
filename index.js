@@ -4,9 +4,7 @@ import fs from "fs";
 import path from "path";
 
 const args = process.argv.slice(2);
-const projectName = args[0] || "."; // Default to current directory if no name is provided
-
-// Resolve the absolute path
+const projectName = args[0] || ".";
 const projectPath = projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
 
 if (projectName !== "." && fs.existsSync(projectPath)) {
@@ -14,37 +12,32 @@ if (projectName !== "." && fs.existsSync(projectPath)) {
   process.exit(1);
 }
 
-// Create the folder only if projectName is not '.'
-if (projectName !== ".") {
-  fs.mkdirSync(projectPath);
-}
+if (projectName !== ".") fs.mkdirSync(projectPath);
 
 console.log(`Creating React + Tailwind project in ${projectPath}...`);
+process.chdir(projectPath);
+
+const runCommand = (command) => execSync(command, { stdio: "inherit" });
 
 try {
-  // Step 1: Run `npm init --yes` to create package.json dynamically
-  execSync("npm init --yes");
+  runCommand("npm init -y");
 
-  // Step 2: Read the generated package.json
-  const packageJsonPath = path.join(process.cwd(), "package.json");
-  const packageJson = require(packageJsonPath);
+  const packageJsonPath = path.join(projectPath, "package.json");
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 
-  // Step 3: Modify package.json to include necessary fields
   packageJson.scripts = {
     dev: "vite",
     build: "vite build",
     lint: "eslint .",
-    preview: "vite preview",
+    preview: "vite preview"
   };
 
   packageJson.dependencies = {
-    ...packageJson.dependencies,
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    react: "^18.3.1",
+    "react-dom": "^18.3.1"
   };
 
   packageJson.devDependencies = {
-    ...packageJson.devDependencies,
     "@eslint/js": "^9.17.0",
     "@types/react": "^18.3.17",
     "@types/react-dom": "^18.3.5",
@@ -57,269 +50,106 @@ try {
     vite: "^6.0.3",
     tailwindcss: "^3.0.0",
     postcss: "^8.4.6",
-    autoprefixer: "^10.4.4",
+    autoprefixer: "^10.4.4"
   };
 
-  // Add "type" as "module"
   packageJson.type = "module";
-
-  // Write the modified package.json back
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-  // Step 4: Create 'public' and 'src' folders
-  fs.mkdirSync(path.join(process.cwd(), "public"));
-  fs.mkdirSync(path.join(process.cwd(), "src"));
+  ["public", "src", "src/assets"].forEach(dir => fs.mkdirSync(path.join(projectPath, dir)));
 
-  // Create assets folder inside src
-  fs.mkdirSync(path.join(process.cwd(), "src", "assets"));
-
-  // Step 5: Create App.jsx and Index.jsx inside src
-  const appJsxContent = `function App() {
+  const files = {
+    "src/App.jsx": `function App() {
   return <div>Hello, React with Tailwind CSS!</div>;
 }
+export default App;`,
 
-export default App;`;
-
-  const indexJsxContent = `import React from 'react';
+    "src/Index.jsx": `import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-<React.StrictMode>
+  <React.StrictMode>
     <App />
-</React.StrictMode>)`;
+  </React.StrictMode>
+);`,
 
-  fs.writeFileSync(path.join(process.cwd(), "src", "App.jsx"), appJsxContent);
-  fs.writeFileSync(
-    path.join(process.cwd(), "src", "Index.jsx"),
-    indexJsxContent
-  );
+    "vite.config.js": `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react-swc';
+export default defineConfig({ plugins: [react()] });`,
 
-  // Step 6: Create vite.config.js file
-  const viteConfigContent = `import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react-swc'; // React SWC plugin for fast builds
-
-// https://vitejs.dev/config/
-export default defineConfig({
-  plugins: [react()],
-});`;
-
-  fs.writeFileSync(
-    path.join(process.cwd(), "vite.config.js"),
-    viteConfigContent
-  );
-
-  // Step 7: Create index.html file
-  const indexHtmlContent = `<!DOCTYPE html>
+    "index.html": `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>React + JS + Vite + Tailwind</title>
+  <title>React + Vite + Tailwind</title>
 </head>
 <body>
   <div id="root"></div>
   <script type="module" src="./src/Index.jsx"></script>
 </body>
-</html>`;
+</html>`,
 
-  fs.writeFileSync(path.join(process.cwd(), "index.html"), indexHtmlContent);
-
-  // Step 8: Create eslint.config.js file
-  const eslintConfigContent = `import js from '@eslint/js'
-import globals from 'globals'
-import react from 'eslint-plugin-react'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-
+    "eslint.config.js": `import js from '@eslint/js';
+import globals from 'globals';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import reactRefresh from 'eslint-plugin-react-refresh';
 export default [
   { ignores: ['dist'] },
   {
     files: ['**/*.{js,jsx}'],
     languageOptions: {
-      ecmaVersion: 2020,
+      ecmaVersion: 'latest',
       globals: globals.browser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
+      parserOptions: { ecmaFeatures: { jsx: true }, sourceType: 'module' }
     },
     settings: { react: { version: '18.3' } },
-    plugins: {
-      react,
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
-    },
-    rules: {
-      ...js.configs.recommended.rules,
-      ...react.configs.recommended.rules,
-      ...react.configs['jsx-runtime'].rules,
-      ...reactHooks.configs.recommended.rules,
-      'react/jsx-no-target-blank': 'off',
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
-      ],
-    },
-  },
-]`;
+    plugins: { react, 'react-hooks': reactHooks, 'react-refresh': reactRefresh },
+    rules: { ...js.configs.recommended.rules, ...react.configs.recommended.rules, ...reactHooks.configs.recommended.rules }
+  }
+];`,
 
-  fs.writeFileSync(
-    path.join(process.cwd(), "eslint.config.js"),
-    eslintConfigContent
-  );
-
-  // Step 9: Create index.css in src with Tailwind directives
-  const indexCssContent = `@tailwind base;
+    "src/index.css": `@tailwind base;
 @tailwind components;
-@tailwind utilities;
-@tailwind variants;`;
+@tailwind utilities;`,
 
-  fs.writeFileSync(
-    path.join(process.cwd(), "src", "index.css"),
+    "tailwind.config.js": `export default {
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  theme: { extend: {} },
+  plugins: []
+};`,
 
-    indexCssContent
-  );
+    "postcss.config.js": `export default { plugins: { tailwindcss: {}, autoprefixer: {} } };`,
 
-  // Step 10: Create tailwind.config.js file
-
-  const tailwindConfigContent = `/** @type {import('tailwindcss').Config} */
-export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
-  theme: {
-    extend: {},
-  },
-  plugins: [],
-}`;
-
-  fs.writeFileSync(
-    path.join(process.cwd(), "tailwind.config.js"),
-
-    tailwindConfigContent
-  );
-
-  // Step 11: Create postcss.config.js file
-  const postcssConfigContent = `export default {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-};`;
-
-  fs.writeFileSync(
-    path.join(process.cwd(), "postcss.config.js"),
-    postcssConfigContent
-  );
-
-  //Step 12: Create .gitignore file
-  const gitIgnoreContent = `# Logs
-logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
-
-node_modules
+    ".gitignore": `node_modules
 dist
-dist-ssr
-*.local
-
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
 .DS_Store
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-`;
-  fs.writeFileSync(path.join(process.cwd(), ".gitignore"), gitIgnoreContent);
+.vscode/
+.idea/`,
 
-  // Step 13: Create postcss.config.js file
-  const readMeContent = `# React + Vite
+    "README.md": `# React + Vite + Tailwind
+This template provides a minimal setup to get React working in Vite with HMR and ESLint.`
+  };
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-The Boilerplate created using create-react-js-tailwind
-- [create-react-js-tailwind on github](https://github.com/akshaywritescode/create-react-js-tailwind)`;
-
-  fs.writeFileSync(path.join(process.cwd(), "README.md"), readMeContent);
-
-  // Step14: Check for Bun and install Bun
-  const isWindows = process.platform === "win32";
+  Object.entries(files).forEach(([filePath, content]) => {
+    fs.writeFileSync(path.join(projectPath, filePath), content);
+  });
 
   try {
-    // Check if Bun is installed
     execSync("bun --version", { stdio: "ignore" });
-    console.log("Bun is already installed. Running 'bun install'...");
-    execSync("bun install", { stdio: "inherit" });
+    console.log("Bun is installed. Running 'bun install'...");
+    runCommand("bun install");
   } catch {
-    console.log(
-      "Bun is not installed. Installing Bun...(This is one time process)"
-    );
-
-    if (isWindows) {
-      console.log("Detected Windows environment.");
-      try {
-        // Install Bun for Windows using PowerShell
-        console.log("Installing Bun using npm...");
-        execSync("npm install -g bun", { stdio: "inherit" });
-
-        console.log("Bun installed successfully. Running 'bun install'...");
-        execSync("bun install", { stdio: "inherit" });
-      } catch (error) {
-        console.error(
-          "Error installing or running Bun on Windows:",
-          error.message
-        );
-        process.exit(1);
-      }
-    } else {
-      console.log("Detected Linux/MacOS environment.");
-      try {
-        // Install Bun for Unix-like systems
-        execSync("npm install -g bun", { stdio: "inherit" });
-
-
-        console.log("Bun installed successfully. Running 'bun install'...");
-        execSync("bun install", { stdio: "inherit" });
-      } catch (error) {
-        console.error(
-          "Error installing or running Bun on Linux/MacOS:",
-          error.message
-        );
-        process.exit(1);
-      }
-    }
-
-    console.log("Bun installed successfully. Running 'bun install'...");
-    execSync("bun install", { stdio: "inherit" });
+    console.log("Bun not found. Installing...");
+    runCommand("npm install -g bun");
+    runCommand("bun install");
   }
 
-  // Step15: Delete bun.lockb and create package-lock.json
-  console.log("Deleting bun.lock...");
-  fs.unlinkSync(path.join(process.cwd(), "bun.lock"));
-
-  console.log("Creating package-lock.json...");
-  execSync("npm i --package-lock-only", { stdio: "inherit" });
-
-  // Final message
-  console.log("\nDone. Now:\n\n  Starting Dev Server...");
-  execSync("npm run dev", { stdio: "inherit" });
+  console.log("Project setup complete!");
 } catch (error) {
-  console.error("Error creating directories and files:", error.message);
+  console.error("Error setting up project:", error);
+  process.exit(1);
 }
