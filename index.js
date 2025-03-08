@@ -4,7 +4,30 @@ const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
 
-const projectName = process.argv[2] || path.basename(process.cwd());
+const projectName = process.argv[2];
+
+if (!projectName) {
+  console.error("Please provide a project name.");
+  console.error("Example: npx create-react-js-tailwind my-app");
+  process.exit(1);
+}
+
+const projectPath = path.join(process.cwd(), projectName);
+
+// Check if the directory exists
+if (fs.existsSync(projectPath)) {
+  console.error(`Error: The folder '${projectName}' already exists!`);
+  process.exit(1);
+}
+
+// Create the project folder
+fs.mkdirSync(projectPath, { recursive: true });
+
+// Change the working directory to the new project folder
+process.chdir(projectPath);
+
+// Now your script will continue in the new project directory
+console.log(`Creating project in: ${projectPath}`);
 
 try {
   // Step 1: Run `npm init --yes` to create package.json dynamically
