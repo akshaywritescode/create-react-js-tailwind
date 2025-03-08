@@ -149,6 +149,16 @@ This template provides a minimal setup to get React working in Vite with HMR and
   }
 
   console.log("Project setup complete!");
+  console.log("");
+
+  if (projectName === ".") {
+    console.log('Run "npm run dev" to start the server.');
+  } else {
+    console.log(`Run the following commands to start the server:\n`);
+    console.log(`cd ${projectName}`);
+    console.log("npm run dev");
+  }
+
 } catch (error) {
   console.error("Error setting up project:", error);
   process.exit(1);
