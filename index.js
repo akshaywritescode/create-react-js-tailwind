@@ -5,7 +5,8 @@ import path from "path";
 
 const args = process.argv.slice(2);
 const projectName = args[0] || ".";
-const projectPath = projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
+const projectPath =
+  projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
 
 if (projectName !== "." && fs.existsSync(projectPath)) {
   console.error(`Error: The folder '${projectName}' already exists!`);
@@ -29,12 +30,12 @@ try {
     dev: "vite",
     build: "vite build",
     lint: "eslint .",
-    preview: "vite preview"
+    preview: "vite preview",
   };
 
   packageJson.dependencies = {
     react: "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
   };
 
   packageJson.devDependencies = {
@@ -50,13 +51,15 @@ try {
     vite: "^6.0.3",
     tailwindcss: "^3.0.0",
     postcss: "^8.4.6",
-    autoprefixer: "^10.4.4"
+    autoprefixer: "^10.4.4",
   };
 
   packageJson.type = "module";
   fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-  ["public", "src", "src/assets"].forEach(dir => fs.mkdirSync(path.join(projectPath, dir)));
+  ["public", "src", "src/assets"].forEach((dir) =>
+    fs.mkdirSync(path.join(projectPath, dir)),
+  );
 
   const files = {
     "src/App.jsx": `function App() {
@@ -131,7 +134,7 @@ dist
 .idea/`,
 
     "README.md": `# React + Vite + Tailwind
-This template provides a minimal setup to get React working in Vite with HMR and ESLint.`
+This template provides a minimal setup to get React working in Vite with HMR and ESLint.`,
   };
 
   Object.entries(files).forEach(([filePath, content]) => {
@@ -148,6 +151,18 @@ This template provides a minimal setup to get React working in Vite with HMR and
     runCommand("bun install");
   }
 
+  // Remove Bun lockfiles
+  ["bun.lockb", "bun.lock"].forEach((file) => {
+    const lockPath = path.join(projectPath, file);
+
+    if (fs.existsSync(lockPath)) {
+      fs.unlinkSync(lockPath);
+    }
+  });
+
+  // Generate npm lockfile
+  runCommand("npm install --package-lock-only");
+
   console.log("Project setup complete!");
   console.log("");
 
@@ -158,7 +173,6 @@ This template provides a minimal setup to get React working in Vite with HMR and
     console.log(`cd ${projectName}`);
     console.log("npm run dev");
   }
-
 } catch (error) {
   console.error("Error setting up project:", error);
   process.exit(1);
