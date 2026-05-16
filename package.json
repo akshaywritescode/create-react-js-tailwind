@@ -1,5 +1,5 @@
 {
-  "name": "create-react-js-tailwind",
+  "name": "create-base-react-app",
   "version": "1.2.1",
   "main": "index.js",
   "bin": {

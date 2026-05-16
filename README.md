@@ -1,75 +1,128 @@
-# create-react-js-tailwind
+# create-base-react-app
 
-`create-react-js-tailwind` is an NPX script that scaffolds a React project with Vite and Tailwind CSS. It generates a complete boilerplate with configurations for ESLint, PostCSS, and TailwindCSS, providing you with a modern development setup out of the box.
+A modern React starter CLI powered by:
+
+- React 19
+- Vite 8
+- Rolldown
+- Tailwind CSS v4
+- React Compiler
+- Bun-powered ultra fast installs
+- JavaScript & TypeScript support
+
+---
 
 ## Features
-- React with JSX
-- Vite for fast development and builds and no need to delete vite boilerplate
-- Preconfigured Tailwind CSS for utility-first styling
-- Preconfigured ESLint for linting
 
-## Installation
-You can use this script directly with NPX, without needing to install it globally.
+- ⚡ Extremely fast project setup using Bun
+- ⚛️ React 19 ready
+- 🎨 Tailwind CSS v4 configured
+- 🚀 Vite 8 + Rolldown
+- 🧠 React Compiler enabled
+- 📦 npm compatible (`package-lock.json` generated)
+- 🔥 Modern ESLint setup
+- 🟦 TypeScript support
+- 🟨 JavaScript support
 
-Create a folder and execute on that
-```bash
-npx create-react-js-tailwind my-app
-```
-
-Execute on current directory
-```bash
-npx create-react-js-tailwind .
-```
-
-Replace `my-app` with the desired name for your project folder. If you don't provide a name, it will scaffold the project in the current directory.
+---
 
 ## Usage
-After running the command, navigate to your project folder (if created in a new directory) and install dependencies:
+
+### Create TypeScript app (default)
+
+```bash
+npx create-base-react-app my-app
+```
+
+or
+
+```bash
+npx create-base-react-app my-app --ts
+```
+
+---
+
+### Create JavaScript app
+
+```bash
+npx create-base-react-app my-app --js
+```
+
+---
+
+## Run Project
 
 ```bash
 cd my-app
-npm install
 npm run dev
 ```
 
-## File Structure
-The script creates the following file structure:
+---
 
+## Generated Stack
+
+### TypeScript Template
+
+- React 19
+- TypeScript 6
+- Vite 8
+- Rolldown
+- Tailwind CSS v4
+- React Compiler
+- ESLint
+
+### JavaScript Template
+
+- React 19
+- Vite 8
+- Rolldown
+- Tailwind CSS v4
+- React Compiler
+- ESLint
+
+---
+
+## Why This CLI?
+
+Most React starters are:
+- outdated
+- slow
+- overconfigured
+- still using old Tailwind/PostCSS setups
+
+`create-base-react-app` gives you a clean modern setup with the latest tooling and near-instant installs using Bun.
+
+---
+
+## Examples
+
+### TypeScript
+
+```bash
+npx create-base-react-app dashboard-app
 ```
-my-app/
-├── public/
-├── src/
-│   ├── assets/
-│   ├── App.jsx
-│   ├── index.css
-│   ├── main.jsx
-├── .gitignore
-├── eslint.config.js
-├── index.html
-├── package-lock.json
-├── package.json
-├── README.md
-├── vite.config.js
+
+### JavaScript
+
+```bash
+npx create-base-react-app landing-page --js
 ```
 
-## Scripts
-The generated `package.json` includes the following scripts:
+---
 
-- `dev`: Starts the Vite development server.
-- `build`: Builds the project for production.
-- `lint`: Lints the project using ESLint.
-- `preview`: Previews the production build locally.
+## Tech
 
-## Configuration
+Built with:
 
-### Vite Configuration
-The `vite.config.js` file is preconfigured with the React SWC plugin for fast builds.
+- React
+- Vite
+- Rolldown
+- Tailwind CSS
+- Bun
+- ESLint
 
-### ESLint Configuration
-The `eslint.config.js` file includes recommended configurations for React and JSX.
-
-### Tailwind CSS
-The `tailwind.config.js` file is set up to scan all relevant files for class names and includes a default theme that you can customize.
+---
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
+
+MIT
