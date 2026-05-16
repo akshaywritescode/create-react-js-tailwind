@@ -432,7 +432,7 @@ Modern React starter powered by:
 
   if (projectName === ".") {
     console.log("starting dev server...");
-    runCommand("npm install --package-lock-only");
+    runCommand("npm run dev");
   } else {
     console.log("Run:");
     console.log(`cd ${projectName}`);
