@@ -5,12 +5,9 @@ import path from "path";
 
 const args = process.argv.slice(2);
 
-const projectName =
-  args.find((arg) => !arg.startsWith("--")) || ".";
+const projectName = args.find((arg) => !arg.startsWith("--")) || ".";
 
-const flags = args.filter((arg) =>
-  arg.startsWith("--"),
-);
+const flags = args.filter((arg) => arg.startsWith("--"));
 
 const isTS = flags.includes("--ts");
 const isJS = flags.includes("--js");
@@ -18,17 +15,10 @@ const isJS = flags.includes("--js");
 const useTypeScript = isTS || !isJS;
 
 const projectPath =
-  projectName === "."
-    ? process.cwd()
-    : path.join(process.cwd(), projectName);
+  projectName === "." ? process.cwd() : path.join(process.cwd(), projectName);
 
-if (
-  projectName !== "." &&
-  fs.existsSync(projectPath)
-) {
-  console.error(
-    `Error: The folder '${projectName}' already exists!`,
-  );
+if (projectName !== "." && fs.existsSync(projectPath)) {
+  console.error(`Error: The folder '${projectName}' already exists!`);
 
   process.exit(1);
 }
@@ -39,9 +29,7 @@ if (projectName !== ".") {
 
 console.log(
   `Creating ${
-    useTypeScript
-      ? "React + TypeScript"
-      : "React + JavaScript"
+    useTypeScript ? "React + TypeScript" : "React + JavaScript"
   } app in ${projectPath}...`,
 );
 
@@ -55,19 +43,12 @@ const runCommand = (command) =>
 try {
   runCommand("npm init -y");
 
-  const packageJsonPath = path.join(
-    projectPath,
-    "package.json",
-  );
+  const packageJsonPath = path.join(projectPath, "package.json");
 
-  const packageJson = JSON.parse(
-    fs.readFileSync(packageJsonPath, "utf-8"),
-  );
+  const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf-8"));
 
   packageJson.name =
-    projectName === "."
-      ? path.basename(projectPath)
-      : projectName;
+    projectName === "." ? path.basename(projectPath) : projectName;
 
   packageJson.private = true;
 
@@ -98,13 +79,10 @@ try {
       "@types/react": "^19.2.14",
       "@types/react-dom": "^19.2.3",
       "@vitejs/plugin-react": "^6.0.1",
-      "babel-plugin-react-compiler":
-        "^1.0.0",
+      "babel-plugin-react-compiler": "^1.0.0",
       eslint: "^10.3.0",
-      "eslint-plugin-react-hooks":
-        "^7.1.1",
-      "eslint-plugin-react-refresh":
-        "^0.5.2",
+      "eslint-plugin-react-hooks": "^7.1.1",
+      "eslint-plugin-react-refresh": "^0.5.2",
       globals: "^17.6.0",
       tailwindcss: "^4.1.7",
       typescript: "~6.0.2",
@@ -120,34 +98,23 @@ try {
       "@types/react": "^19.2.14",
       "@types/react-dom": "^19.2.3",
       "@vitejs/plugin-react": "^6.0.1",
-      "babel-plugin-react-compiler":
-        "^1.0.0",
+      "babel-plugin-react-compiler": "^1.0.0",
       eslint: "^10.3.0",
-      "eslint-plugin-react-hooks":
-        "^7.1.1",
-      "eslint-plugin-react-refresh":
-        "^0.5.2",
+      "eslint-plugin-react-hooks": "^7.1.1",
+      "eslint-plugin-react-refresh": "^0.5.2",
       globals: "^17.6.0",
       tailwindcss: "^4.1.7",
       vite: "^8.0.12",
     };
   }
 
-  fs.writeFileSync(
-    packageJsonPath,
-    JSON.stringify(packageJson, null, 2),
-  );
+  fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
 
-  ["public", "src", "src/assets"].forEach(
-    (dir) => {
-      fs.mkdirSync(
-        path.join(projectPath, dir),
-        {
-          recursive: true,
-        },
-      );
-    },
-  );
+  ["public", "src", "src/assets"].forEach((dir) => {
+    fs.mkdirSync(path.join(projectPath, dir), {
+      recursive: true,
+    });
+  });
 
   const files = useTypeScript
     ? {
@@ -412,9 +379,7 @@ dist
 `,
 
     "README.md": `# ${
-      useTypeScript
-        ? "React + TypeScript"
-        : "React + JavaScript"
+      useTypeScript ? "React + TypeScript" : "React + JavaScript"
     } + Vite
 
 Modern React starter powered by:
@@ -432,10 +397,7 @@ Modern React starter powered by:
     ...files,
     ...sharedFiles,
   }).forEach(([filePath, content]) => {
-    fs.writeFileSync(
-      path.join(projectPath, filePath),
-      content,
-    );
+    fs.writeFileSync(path.join(projectPath, filePath), content);
   });
 
   try {
@@ -443,9 +405,7 @@ Modern React starter powered by:
       stdio: "ignore",
     });
 
-    console.log(
-      "Bun is installed. Running 'bun install'...",
-    );
+    console.log("Bun is installed. Running 'bun install'...");
 
     runCommand("bun install");
   } catch {
@@ -456,42 +416,30 @@ Modern React starter powered by:
     runCommand("bun install");
   }
 
-  ["bun.lock", "bun.lockb"].forEach(
-    (file) => {
-      const lockPath = path.join(
-        projectPath,
-        file,
-      );
+  ["bun.lock", "bun.lockb"].forEach((file) => {
+    const lockPath = path.join(projectPath, file);
 
-      if (fs.existsSync(lockPath)) {
-        fs.unlinkSync(lockPath);
-      }
-    },
-  );
+    if (fs.existsSync(lockPath)) {
+      fs.unlinkSync(lockPath);
+    }
+  });
 
-  runCommand(
-    "npm install --package-lock-only",
-  );
+  runCommand("npm install --package-lock-only");
 
   console.log("");
-  console.log(
-    "Project setup complete!",
-  );
+  console.log("Project setup complete!");
   console.log("");
 
   if (projectName === ".") {
-    console.log("Run:");
-    console.log("npm run dev");
+    console.log("starting dev server...");
+    runCommand("npm install --package-lock-only");
   } else {
     console.log("Run:");
     console.log(`cd ${projectName}`);
     console.log("npm run dev");
   }
 } catch (error) {
-  console.error(
-    "Error setting up project:",
-    error,
-  );
+  console.error("Error setting up project:", error);
 
   process.exit(1);
 }
