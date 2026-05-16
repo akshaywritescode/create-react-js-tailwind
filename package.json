@@ -7,7 +7,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/akshaywritescode/create-react-js-tailwind.git"
+    "url": "https://github.com/akshaywritescode/create-base-react-app.git"
   },
   "scripts": {
     "dev": "vite",
