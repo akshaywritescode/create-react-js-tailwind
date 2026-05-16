@@ -41,12 +41,15 @@ my-app/
 ├── src/
 │   ├── assets/
 │   ├── App.jsx
-│   ├── Index.jsx
 │   ├── index.css
-├── package.json
-├── vite.config.js
-├── index.html
+│   ├── main.jsx
+├── .gitignore
 ├── eslint.config.js
+├── index.html
+├── package-lock.json
+├── package.json
+├── README.md
+├── vite.config.js
 ```
 
 ## Scripts
