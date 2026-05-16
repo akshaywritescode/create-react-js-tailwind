@@ -47,8 +47,6 @@ my-app/
 ├── vite.config.js
 ├── index.html
 ├── eslint.config.js
-├── tailwind.config.js
-├── postcss.config.js
 ```
 
 ## Scripts
