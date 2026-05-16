@@ -1,14 +1,14 @@
 {
   "name": "create-base-react-app",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "main": "index.js",
   "bin": {
     "create-react-js-tailwind": "./index.js"
   },
   "repository": {
-  "type": "git",
-  "url": "https://github.com/akshaywritescode/create-react-js-tailwind.git"
-},
+    "type": "git",
+    "url": "https://github.com/akshaywritescode/create-react-js-tailwind.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
