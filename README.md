@@ -1,5 +1,7 @@
 # create-base-react-app
 
+![DEMO](https://raw.githubusercontent.com/akshaywritescode/create-base-react-app/refs/heads/main/demo.gif)
+
 A modern React starter CLI powered by:
 
 - React 19
